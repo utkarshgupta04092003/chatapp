@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Assuming you're using React Router
 import logo from '../assets/logo.png';
 import { APP_NAME } from '../utils/constant';
@@ -10,14 +10,21 @@ import { loginRoute } from '../utils/APIRoutes';
 
 
 function Login() {
+  
+  // use for navigation
+  const navigate = useNavigate();
+  
+  // redirect to home page if user is loggedin 
+  useEffect(()=>{
+    if(localStorage.getItem('chatapp-user')){
+      navigate('/');
+    }
+  }, []);
+  
   const [formData, setFormData] = useState({
     username: '',
     password: ''
   });
-
-  // use for navigation
-  const navigate = useNavigate();
-
   // handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -72,7 +79,7 @@ function Login() {
 
         // will use cookie later
         // document.cookie = `userid=${data.user._id}; expire="${new Date()}"`;
-        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('chatapp-user', JSON.stringify(data.user));
         console.log(data.user._id); 
         setTimeout(() => {
           navigate('/')
