@@ -5,11 +5,7 @@ const Users = require('../model/userModel');
 const register = async (req, res, next) => {
 
     try {
-
-        console.log(req.body);
         const { username, email, password } = req.body;
-
-        console.log('-> router called from controller');
         const usernameCheck = await Users.findOne({ username });
 
         // check for existance of username
@@ -26,61 +22,64 @@ const register = async (req, res, next) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-
-
         // create user into database
         const user = await Users.create({
             username, email, password: hashedPassword
         });
-
-        console.log('before deleting password', user);
-        
         delete user.password;
-
-        console.log('after deleting password', user);
-
-        res.status(200).json({ msg: `${user.username} registered successfully`, status: true });
+        return res.status(200).json({ msg: `${user.username} registered successfully`, status: true });
     }
 
     catch (err) {
         console.log(err);
         console.error(err);
-        return res.status(200).json({msg: 'Internal server error', status: false});
+        return res.status(200).json({ msg: 'Internal server error', status: false });
     }
 }
 
 
-const login = async (req, res, next)=>{
+const login = async (req, res, next) => {
     console.log(req.body);
 
-    try{
-        
-        const {username, password} = req.body;
-
-        const user = await Users.findOne({username});
-
-        if(!user){
+    try {
+        const { username, password } = req.body;
+        const user = await Users.findOne({ username });
+        // check user is exist or not
+        if (!user) {
             return res.status(200).json({ msg: 'Incorrect username or password', status: false });
         }
-
         const hashedPassword = await bcrypt.hash(password, 10);
-        
-        const result = await bcrypt.compare(password, user.password );
-        console.log('pasword match',result);
-
-        if(!result){
-            return res.status(200).json({msg: 'Incorrect username or password', status: false});
+        // check password is correct or not
+        const result = await bcrypt.compare(password, user.password);
+        // return result based on matching
+        if (!result) {
+            return res.status(200).json({ msg: 'Incorrect username or password', status: false });
         }
-
-        return res.status(200).json({msg: `${user.username} loggedin successfully`, status: true, user});
-
+        return res.status(200).json({ msg: `${user.username} loggedin successfully`, status: true, user });
     }
- 
     catch (err) {
-        
-        return res.status(200).json({msg: 'Internal server error', status: false});
+        return res.status(200).json({ msg: 'Internal server error', status: false });
     }
 }
 
 
-module.exports = { register, login }
+const setAvatar = async (req, res, next)=>{
+    try{
+        const id = req.params.id;
+        const avatarImage = req.body.image;
+        console.log(id);
+        console.log(avatarImage);
+        const userData = await Users.findByIdAndUpdate(id, {
+            isAvatarImageSet: true,
+            avatarImage: avatarImage
+        })
+        console.log(userData);
+        return await res.status(200).json({msg: 'Profile updated successfully', status: true, user: userData});
+    }
+    catch(err){
+        console.log(err);
+        return res.status(200).json({msg: 'Something went wrong', status: false});
+    }
+}
+
+module.exports = { register, login , setAvatar}
