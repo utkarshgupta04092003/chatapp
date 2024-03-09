@@ -1,14 +1,24 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom'; // Assuming you're using React Router
+import { Link, useNavigate } from 'react-router-dom'; // Assuming you're using React Router
 import logo from '../assets/logo.png';
 import { APP_NAME } from '../utils/constant';
 import axios from 'axios';
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { loginRoute } from '../utils/APIRoutes';
+
+
+
 function Login() {
   const [formData, setFormData] = useState({
     username: '',
     password: ''
   });
 
+  // use for navigation
+  const navigate = useNavigate();
+
+  // handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -17,10 +27,58 @@ function Login() {
     });
   };
 
-  const handleSubmit = (e) => {
+  // validate form inputs
+  const validateForm = ()=>{
+    if (!formData.username) {
+      toast.error("Username is required", {autoClose: 2000});
+      return false;
+    }
+    else if(formData.username.length < 4){
+      toast.error("Username length should be greater than 4", {autoClose: 2000});
+      return false;
+    }
+    
+    else if (!formData.password) {
+      toast.error('Password is required', {autoClose: 2000});
+      return false;
+    }
+    else if(formData.password.length < 8){
+      toast.error("Password length should be greater than 8", {autoClose: 2000});
+      return false;
+    }
+    return true;
+  }
+
+
+  // handle form submission from backend and redirect to home page
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login submission
     console.log('Login form submitted:', formData);
+
+    if(validateForm()){
+      // alert("validated")
+      const {username, password} = formData;
+      const {data} = await axios.post(loginRoute, {
+        username, password
+      });
+      console.log(data);
+
+      
+      if(data.status == false){
+        toast.error(data.msg, {autoClose: 2000});
+      }
+      else{
+        toast.success(data.msg, {autoClose: 2000});
+
+        // will use cookie later
+        // document.cookie = `userid=${data.user._id}; expire="${new Date()}"`;
+        localStorage.setItem('user', JSON.stringify(data.user));
+        console.log(data.user._id); 
+        setTimeout(() => {
+          navigate('/')
+        }, 3000);
+      }
+    }
     
   };
 
@@ -50,6 +108,7 @@ function Login() {
           <p className="text-sm text-gray-600">Don't have an account? <Link to="/register" className="font-medium text-purple-600 hover:text-purple-500">Sign Up</Link></p>
         </div>
       </div>
+      <ToastContainer></ToastContainer>
     </div>
   );
 }
