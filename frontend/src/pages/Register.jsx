@@ -70,17 +70,21 @@ function Register() {
       const {data} = await axios.post(registerRoute, {
         username, email, password
       })
+      
       if(data.status == false){
         toast.error(data.msg, {autoClose: 2000});
 
       }
       else{
         // console.log('is tre', data);
-        localStorage.setItem('chat-app-user', JSON.stringify(data.user));
-        localStorage.setItem('user', JSON.stringify(data.user._id));
+        // localStorage.setItem('chat-app-user', JSON.stringify(data.user));
+        // localStorage.setItem('user', JSON.stringify(data.user._id));
         toast.success(data.msg, {autoClose: 2000});
+        setTimeout(() => {
+          
+          navigate('/login')
+        }, 3000);
       }
-      navigate('/login');
       // console.log(data);
     }
     
