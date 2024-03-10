@@ -72,9 +72,9 @@ const setAvatar = async (req, res, next)=>{
         const userData = await Users.findByIdAndUpdate(id, {
             isAvatarImageSet: true,
             avatarImage: avatarImage
-        })
+        }, {new: true})
         console.log(userData);
-        return await res.status(200).json({msg: 'Profile updated successfully', status: true, user: userData});
+        return res.status(200).json({msg: 'Profile updated successfully', status: true, user: userData});
     }
     catch(err){
         console.log(err);
@@ -82,4 +82,23 @@ const setAvatar = async (req, res, next)=>{
     }
 }
 
-module.exports = { register, login , setAvatar}
+
+
+const getAllUsers = async (req, res, next) =>{
+    console.log('alluser controller');
+    try{
+        const currUser = req.params.id;
+        console.log(currUser);
+        const users = await Users.find({_id: {$ne: currUser}}).select([
+            "email", 'username', 'avatarImage', '_id'
+        ])
+        console.log(users);
+
+        return res.status(200).json({msg: 'successfully fetch all users',status: true, users});
+    }
+    catch(err){
+        return res.status(200).json({msg: 'Internal server error', status: false});
+    }
+}
+
+module.exports = { register, login , setAvatar, getAllUsers}
