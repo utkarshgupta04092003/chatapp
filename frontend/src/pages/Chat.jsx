@@ -58,12 +58,15 @@ export default function Chat() {
     setCurrChat(contact);
     console.log('curr', contact);
   }
+
+
+  
   return (
     <div className="flex h-screen mx-auto  w-3/4">
       
       <Contacts contacts={contacts} currUser={currUser} changeChat={changeChat} />
       {
-        currChat ? <ParticularChat currChat={currChat} currUser={currUser}/> : <Welcome currentUser={currUser} />
+        currChat ? <ParticularChat currChat={currChat} setCurrChat={setCurrChat} currUser={currUser} /> : <Welcome currentUser={currUser} />
       }
 
     </div>

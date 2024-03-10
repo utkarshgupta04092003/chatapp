@@ -5,6 +5,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Chat from './pages/Chat';
 import SetAvatar from './pages/SetAvatar';
+import Profile from './pages/Profile';
 export default function App() {
   return (
 
@@ -18,6 +19,7 @@ export default function App() {
         <Route path='/login' element={<Login/>}/>
         <Route path='/register' element={<Register/>}/>
         <Route path='/setavatar' element={<SetAvatar/>}/>
+        <Route path='/profile/:username' element={<Profile/>}/>
         </Routes>
       </BrowserRouter>
     </div>

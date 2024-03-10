@@ -1,6 +1,27 @@
 import React from 'react'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+export default function ChatHeader({ currChat, setCurrChat }) {
 
-export default function ChatHeader({ currChat }) {
+
+    const [isOpen, setIsOpen] = useState(false);
+    const navigate = useNavigate();
+    const toggleDropdown = () => {
+        setIsOpen(!isOpen);
+    };
+
+    // Handle option click here
+    const handleOptionClick = (option) => {
+        console.log(option);
+        if(option === "closeChat"){
+            setCurrChat('');
+        }
+        else if("profile"){
+            navigate(`/profile/${currChat.username}`);
+        }
+        setIsOpen(false); 
+    };
+
     return (
         <div className="flex items-center justify-between mb-4 border border-purple-500 rounded-lg p-3 pr-8">
             <div className='flex items-center'>
@@ -11,9 +32,29 @@ export default function ChatHeader({ currChat }) {
                     {/* <p className="text-sm text-gray-500">Last message...</p> */}
                 </div>
             </div>
-            <div className='flex items-center font-bold'>
-                
+            <div className='flex items-center font-semibold'>
+                <div className="relative">
+                    <button
+                        onClick={toggleDropdown}
+                        className="text-gray-600 hover:text-gray-800 focus:outline-none focus:text-gray-800" >...</button>
+                    {isOpen && (
+                        <div className="absolute right-0 mt-2 w-36 bg-white rounded-md shadow-lg">
+                            <ul>
+                                <li onClick={() => handleOptionClick('closeChat')}
+                                    className="py-2 px-4 cursor-pointer hover:bg-gray-100">
+                                    Close Chat
+                                </li>
+                                <li onClick={() => handleOptionClick('profile')}
+                                    className="py-2 px-4 cursor-pointer hover:bg-gray-100">
+                                    Show Profile
+                                </li>
+                            </ul>
+                        </div>
+                    )}
+                </div>
             </div>
+
         </div>
+
     )
 }
