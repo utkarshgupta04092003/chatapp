@@ -3,7 +3,6 @@ const Messages = require('../model/messageModel');
 
 // controller to add message data in db
 const addMessage = async (req, res, next) =>{
-    
     try{
         console.log('add msg',req.body);
         const {from, to, message} = req.body;
@@ -11,9 +10,7 @@ const addMessage = async (req, res, next) =>{
             message: { text: message},
             users: [from, to],
             sender : from
-
         })
-
         if(data){
             return res.status(200).json({msg: 'Message send successfully', status: true })
         }

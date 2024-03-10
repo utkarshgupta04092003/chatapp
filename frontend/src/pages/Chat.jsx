@@ -1,11 +1,12 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { Component, useEffect, useState, useRef } from 'react'
 import axios from 'axios';
-import { allUsersRoute } from '../utils/APIRoutes';
+import { allUsersRoute, host } from '../utils/APIRoutes';
 import {useNavigate} from 'react-router-dom';
 import Contacts from '../components/Contacts';
 import Welcome from '../components/Welcome';
 import ParticularChat from '../components/ParticularChat';
 
+import {io} from 'socket.io-client';
 
 
 export default function Chat() {
@@ -14,6 +15,10 @@ export default function Chat() {
   const [contacts, setContacts] = useState();
   const [currChat, setCurrChat] = useState();
   const navigate = useNavigate();
+
+
+
+  // check for the authentication
   useEffect(()=>{
 
     const setcurr = async ()=>{
@@ -31,6 +36,20 @@ export default function Chat() {
     setcurr();
   },[]);
 
+  // socket if the current user is changed
+  const socket = useRef();
+  useEffect(()=>{
+
+      if(currUser){
+        socket.current =  io(host);
+        socket.current.emit('add-user', currUser._id);
+      }
+      
+    }, [currUser])
+    
+    // console.log('currUser._id', currUser._id);
+
+  // change the data if the current user is changed
   useEffect(()=>{
     const fetchAllUsers = async ()=>{
 
@@ -62,11 +81,13 @@ export default function Chat() {
 
   
   return (
-    <div className="flex h-screen mx-auto  w-3/4">
+    <div className="flex h-screen mx-auto w-full md:w-3/4">
       
       <Contacts contacts={contacts} currUser={currUser} changeChat={changeChat} />
       {
-        currChat ? <ParticularChat currChat={currChat} setCurrChat={setCurrChat} currUser={currUser} /> : <Welcome currentUser={currUser} />
+        currChat ? 
+        <ParticularChat currChat={currChat} setCurrChat={setCurrChat} currUser={currUser} socket={socket} /> : 
+        <Welcome currentUser={currUser}  />
       }
 
     </div>
