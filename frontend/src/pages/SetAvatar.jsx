@@ -91,14 +91,13 @@ export default function SetAvatar() {
         const {data} = await axios.post(`${setAvatarRoute}/${currUser._id}`,{
             image: selected
         });
-        // 1:47:00
         console.log(data)
         if(data.status){
             toast.success(data.msg, { autoClose: 2000 });
             localStorage.setItem('chatapp-user', JSON.stringify(data.user));
             setTimeout(() => {
                 
-                navigate('/');
+                navigate('/profile');
             }, 3000);
         }
         else{

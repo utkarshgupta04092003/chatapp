@@ -14,11 +14,7 @@ export default function Profile() {
       setProfileData(data);
     }
   }, [])
-  // const profileData = {
-  //   username: 'JohnDoe',
-  //   profileImage: 'https://api.multiavatar.com/925.svg', // URL of profile image
-  // };
-
+ 
   const handleSignOut = () =>{
     localStorage.clear();
     navigate('/')
@@ -30,7 +26,8 @@ export default function Profile() {
       <div className='flex flex-col border border-purple-50 p-16 shadow-lg rounded-lg'>
       <div className="text-center">
         <img src={profileData?.avatarImage} alt="Profile" className="w-32 h-32 rounded-full mx-auto mb-4" />
-        <p className="text-lg font-semibold">{profileData?.username}</p>
+        <p className="text-2xl font-semibold">{profileData?.username}</p>
+        <p className="text-lg font-semibold">{profileData?.email}</p>
       </div>
 
       {/* Edit Profile Photo Button */}
