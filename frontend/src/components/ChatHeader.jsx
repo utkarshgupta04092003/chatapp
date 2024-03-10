@@ -16,9 +16,7 @@ export default function ChatHeader({ currChat, setCurrChat }) {
         if(option === "closeChat"){
             setCurrChat('');
         }
-        else if("profile"){
-            navigate(`/profile/${currChat.username}`);
-        }
+       
         setIsOpen(false); 
     };
 
@@ -44,10 +42,7 @@ export default function ChatHeader({ currChat, setCurrChat }) {
                                     className="py-2 px-4 cursor-pointer hover:bg-gray-100">
                                     Close Chat
                                 </li>
-                                <li onClick={() => handleOptionClick('profile')}
-                                    className="py-2 px-4 cursor-pointer hover:bg-gray-100">
-                                    Show Profile
-                                </li>
+                                
                             </ul>
                         </div>
                     )}
