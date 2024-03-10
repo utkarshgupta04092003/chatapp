@@ -2,7 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import EmojiPicker from 'emoji-picker-react';
 
 
-export default function MsgInput({handleSendMessage}) {
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+export default function MsgInput({ handleSendMessage }) {
     const [showPicker, setShowPicker] = useState(false);
     const pickerRef = useRef(null);
     const [inputText, setInputText] = useState('');
@@ -23,16 +26,23 @@ export default function MsgInput({handleSendMessage}) {
     }, []);
 
 
-    
+
     const handleEmojiClick = (event, emojiObject) => {
-        console.log('emoji',emojiObject);
+        console.log('emoji', emojiObject);
         console.log(event.emoji);
-        setInputText(prev =>(prev+event.emoji));
+        setInputText(prev => (prev + event.emoji));
     };
 
-    const handleSend = (e) =>{
+    const handleSend = (e) => {
+        e.preventDefault();
         console.log(inputText);
-        handleSendMessage(inputText);
+        if(inputText.length == 0){
+            toast.error('Type something', {autoClose: 2000});
+        }
+        else{
+            handleSendMessage(inputText);
+            setInputText('')
+        }
     }
     return (
         <div className="flex items-center">
@@ -48,7 +58,7 @@ export default function MsgInput({handleSendMessage}) {
                 {/* Emoji Picker */}
                 {showPicker && (
                     <div ref={pickerRef}
-                     className="absolute -top-[480px] -right-[300px] z-10 bg-white rounded-md shadow-md p-2">
+                        className="absolute -top-[480px] -right-[300px] z-10 bg-white rounded-md shadow-md p-2">
                         <EmojiPicker
                             onEmojiClick={handleEmojiClick}
                             disableSearchBar
@@ -59,11 +69,17 @@ export default function MsgInput({handleSendMessage}) {
                     </div>
                 )}
             </div>
-            <input type="text" placeholder="Type a message..." className="w-full border border-gray-200 p-2 rounded-md mr-2" 
-            onChange={(e) => setInputText(e.target.value)}
-            value={inputText}/>
+
+            <form className='flex w-full' onSubmit={handleSend}>
+
+            <input type="text" placeholder="Type a message..." className="w-full border border-gray-200 p-2 rounded-md mr-2"
+                onChange={(e) => setInputText(e.target.value)}
+                value={inputText} />
             <button className="px-4 py-2 bg-purple-500 text-white rounded-md"
-            onClick={handleSend}>Send</button>
+                onClick={handleSend}>Send</button>
+                </form>
+
+                <ToastContainer></ToastContainer>
         </div>
 
     )
