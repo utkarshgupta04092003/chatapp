@@ -6,6 +6,8 @@ import Login from './pages/Login';
 import Chat from './pages/Chat';
 import SetAvatar from './pages/SetAvatar';
 import Profile from './pages/Profile';
+import CreateChatroom from './pages/CreateChatroom';
+import Chatrooms from './pages/Chatrooms';
 export default function App() {
   return (
 
@@ -20,6 +22,8 @@ export default function App() {
         <Route path='/register' element={<Register/>}/>
         <Route path='/setavatar' element={<SetAvatar/>}/>
         <Route path='/profile' element={<Profile/>}/>
+        <Route path='/createchatroom' element={<CreateChatroom/>}/>
+        <Route path='/chatrooms' element={<Chatrooms/>}/>
         </Routes>
       </BrowserRouter>
     </div>

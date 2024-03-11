@@ -3,6 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messagesRoute');
+const chatroomRoutes = require('./routes/chatroomRoute');
 const socket = require('socket.io');
 
 const origin = 'http://localhost:5173';
@@ -16,6 +17,7 @@ app.use(express.json());
 
 app.use('/api/auth', userRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/chatroom', chatroomRoutes);
 
 
 mongoose.connect(`${process.env.DATABASE_URI}${process.env.DB_NAME}`, {
@@ -36,28 +38,6 @@ const io = socket(server, {
     }
 })
 
-// global.onlineUsers = new Map();
-
-// io.on('connection', (socket)=>{
-
-//     global.chatSocket = socket;
-//     socket.on('add-user', (userId) =>{
-//         console.log(userId, socket.id);
-//         onlineUsers.set(userId, socket.id);
-//     });
-
-//     socket.on('send-msg', (data)=>{
-//         console.log(onlineUsers);
-//         console.log('data', data.to);
-//         const sendUserSocket = onlineUsers.get(data.to);
-
-//         if(sendUserSocket){
-//             console.log('data.msg', data.msg);
-//             socket.to(sendUserSocket).emit('msg-recieve', data.msg)
-//         }
-//     })
-
-// })
 
 global.onlineUsers = new Map();
 

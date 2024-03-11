@@ -9,14 +9,18 @@ export default function Contacts({ contacts, currUser, changeChat }) {
     const [currUserImage, setCurrUserImage] = useState();
     const [currentSelected, setCurrentSelected] = useState();
     const [searchUser, setSearchUser] = useState();
-    const [filteredContacts, setFilteredContacts] = useState();
+    const [filteredContacts, setFilteredContacts] = useState(null);
+    // useEffect(() => {
+    //     console.log('use ef caled')
+    //     setFilteredContacts(contacts);
+    // }, []);
+
     useEffect(() => {
 
         if (currUser) {
             setCurrUserName(currUser.username);
             setCurrUserImage(currUser.avatarImage);
         }
-
     }, [currUser]);
 
 
@@ -28,7 +32,7 @@ export default function Contacts({ contacts, currUser, changeChat }) {
     const handleSearchUser = (e) => {
         const svalue = e.target.value;
         setSearchUser(svalue);
-       
+
         const filteredUserList = contacts?.filter(user => user?.username?.toLowerCase().includes(svalue?.toLowerCase()));
         setFilteredContacts(filteredUserList);
     }
@@ -55,6 +59,13 @@ export default function Contacts({ contacts, currUser, changeChat }) {
                 </div>
             </Link>
 
+            {/* create chatroom */}
+            <Link to={'/chatrooms'}>
+            <div className={` mb-2  p-2 rounded-md border border-purple-500 cursor-pointer transition ease-in-out delay-75 bg-purple-500`}>
+                <p className="text-sm text-center text-white font-semibold">Chatroom</p>
+            </div>
+            </Link>
+
             {/* Search Bar */}
             <div className="mb-4">
                 <input type="text" placeholder="Search user..."
@@ -73,6 +84,17 @@ export default function Contacts({ contacts, currUser, changeChat }) {
                         <span className="text-sm">{contact.username}</span>
                     </div>
                 ))}
+
+                {!filteredContacts && <div>
+                    {contacts?.map((contact, index) => (
+
+                        <div className={`flex items-center mb-2  p-2 rounded-md border border-purple-500 cursor-pointer transition ease-in-out delay-75 ${currentSelected == contact._id ? "bg-purple-500" : "bg-purple-50"}`} id={contact._id} key={contact._id} onClick={() => handleClickChat(contact._id, contact)}>
+                            <img src={contact.avatarImage} alt="Contact" className="w-8 h-8 rounded-full mr-2" />
+                            <span className="text-sm">{contact.username}</span>
+                        </div>
+                    ))}
+                </div>
+                }
 
             </div>
         </div>
