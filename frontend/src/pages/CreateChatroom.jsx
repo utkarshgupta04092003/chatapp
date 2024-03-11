@@ -83,8 +83,12 @@ function CreateChatroom() {
         });
         console.log('Chatroom created:', data);
         
-        if(data.status)
+        if(data.status){
           toast.success(data.msg, { autoClose: 2000 });
+          setTimeout(() => {
+            navigate('/chatrooms')
+          }, 3000);
+        }
         else  
         toast.error(data.msg, { autoClose: 2000 });
 
@@ -116,7 +120,7 @@ function CreateChatroom() {
 
       <div className="mb-4">
         {/* <label htmlFor="description" className="block text-gray-700">Description:</label> */}
-        <textarea
+        <input
           id="description"
           name="description"
           value={formData.description}

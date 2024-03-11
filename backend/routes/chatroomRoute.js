@@ -1,9 +1,9 @@
 
 
 const router = require('express').Router();
-const { createChatroom } = require('../controllers/chatroomController');
+const { createChatroom , getAllChatrooms} = require('../controllers/chatroomController');
 
 router.post('/createchatroom', createChatroom);
-// router.post('/getmsg', getAllMessage);
+router.post('/getallchatrooms', getAllChatrooms);
 
 module.exports = router;
