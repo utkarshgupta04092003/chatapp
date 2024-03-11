@@ -12,7 +12,7 @@ import {io} from 'socket.io-client';
 export default function Chat() {
 
   const [currUser, setCurrUser] = useState(null);
-  const [contacts, setContacts] = useState();
+  const [contacts, setContacts] = useState([]);
   const [currChat, setCurrChat] = useState();
   const navigate = useNavigate();
 
