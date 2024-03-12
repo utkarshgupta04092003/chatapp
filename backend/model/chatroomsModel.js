@@ -22,7 +22,7 @@ const chatroomsSchema = new mongoose.Schema({
     }],    // message id
     users: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'Users'
     }],
     isChatroomImageSet : {
         type: Boolean,
