@@ -150,4 +150,32 @@ const deleteChatroom = async (req, res, next) =>{
     return res.status(200).json({ msg: 'Internal server error', status: false });
   }
 }
-module.exports = { createChatroom, getAllChatrooms, getChatroomChat, addUserTochatroom, deleteChatroom };
+
+const exitFromChatroom = async (req, res, next) => {
+    try{
+        const {groupId, userId} = req.body;
+        
+        const chatroom = await ChatroomsModel.findById(groupId);
+        if(!chatroom){
+            return res.json({msg: 'chatroom not found', status: false});
+        }
+
+        const users = chatroom.users;
+        console.log('goup users', users);
+        const modifiedUsers = users.filter((user)=>user._id != userId);
+        console.log('modified user',modifiedUsers);
+
+        chatroom.users = modifiedUsers;
+
+        await chatroom.save();
+
+
+        return res.json({msg: 'Exit successfully', status: true});
+
+    }
+    catch(errr){
+        // console.log(err);
+        return res.json({msg: 'Internal server error', status: false});
+    }
+}
+module.exports = { createChatroom, getAllChatrooms, getChatroomChat, addUserTochatroom, deleteChatroom, exitFromChatroom };

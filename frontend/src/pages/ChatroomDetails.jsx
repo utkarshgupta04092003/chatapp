@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { addUserTochatroomRoute, deleteChatroom, getAllChatroomsRoute, getChatroomChatRoute } from '../utils/APIRoutes';
+import { addUserTochatroomRoute, deleteChatroom, getAllChatroomsRoute, getChatroomChatRoute, exitFromChatroom } from '../utils/APIRoutes';
 import axios from 'axios';
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -130,6 +130,27 @@ export default function ChatroomDetails() {
     }, 3000);
   }
 
+  const handleExitChatroom = async () =>{
+    const cnf = confirm("You want to exit this chatroom");
+
+    if (!cnf)
+      return;
+    console.log('delete', cnf);
+    console.log(groupData);
+    const {data} = await axios.post(exitFromChatroom, { groupId: groupData._id, userId: currUser._id});
+    console.log('exit user', data);
+    if(data.status){
+      toast.success(data.msg, {autoClose: 2000});
+      setTimeout(() => {
+        navigate('/chatrooms');
+      }, 3000);
+    }
+    else{
+      toast.error(data.msg, {autoClose: 2000});
+    }
+
+  }
+
 
   return (
     <div className="bg-white p-4 rounded-md shadow-md mt-16 w-3/4 mx-auto">
@@ -171,10 +192,17 @@ export default function ChatroomDetails() {
             </div>
           }
 
-          {groupData?.creatorId === currUser?._id && (
+        {groupData?.creatorId === currUser?._id && (
             <button className="mt-4 px-8 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
               onClick={handleDeleteChatroom}>
               Delete this chatroom
+            </button>
+          )} 
+          
+          {groupData?.creatorId !== currUser?._id && (
+            <button className="mt-4 px-8 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+              onClick={handleExitChatroom}>
+              Exit from chatroom
             </button>
           )}
 
