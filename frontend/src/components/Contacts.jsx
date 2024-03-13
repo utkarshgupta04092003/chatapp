@@ -10,10 +10,6 @@ export default function Contacts({ contacts, currUser, changeChat }) {
     const [currentSelected, setCurrentSelected] = useState();
     const [searchUser, setSearchUser] = useState();
     const [filteredContacts, setFilteredContacts] = useState(null);
-    // useEffect(() => {
-    //     console.log('use ef caled')
-    //     setFilteredContacts(contacts);
-    // }, []);
 
     useEffect(() => {
 
@@ -39,7 +35,7 @@ export default function Contacts({ contacts, currUser, changeChat }) {
 
     return (
 
-        <div className="w-1/4 bg-white border border-gray-400 rounded-tl-md rounded-bl-md p-4">
+        <div className="w-1/3 bg-white border border-gray-400 rounded-tl-md rounded-bl-md p-4">
             {/* App Name */}
             <div className='flex justify-center items-center mb-2'>
                 {/* Insert logo image here */}
@@ -61,9 +57,9 @@ export default function Contacts({ contacts, currUser, changeChat }) {
 
             {/* create chatroom */}
             <Link to={'/chatrooms'}>
-            <div className={` mb-2  p-2 rounded-md border border-purple-500 cursor-pointer transition ease-in-out delay-75 bg-purple-500`}>
-                <p className="text-sm text-center text-white font-semibold">Chatroom</p>
-            </div>
+                <div className={` mb-2  p-2 rounded-md border border-purple-500 cursor-pointer transition ease-in-out delay-75 bg-purple-500`}>
+                    <p className="text-sm text-center text-white font-semibold">Chatrooms</p>
+                </div>
             </Link>
 
             {/* Search Bar */}

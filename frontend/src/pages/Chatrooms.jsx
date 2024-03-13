@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom';
+import {  getAllChatroomsRoute } from '../utils/APIRoutes';
 import axios from 'axios';
-import { getAllChatrooms } from '../utils/APIRoutes';
+import ChatroomGroups from '../components/ChatroomGroups';
+import ChatroomChats from '../components/ChatroomChats';
+import plus from '../../public/plus.svg';
 
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-
-
-export default function Chatrooms() {
+export default function ChatroomChat() {
 
   const [currUser, setCurrUser] = useState();
   const [allChatrooms, setAllChatrooms] = useState([]);
-  const navigate = useNavigate();
+  const [selectedGroup, setSelectedGroup] = useState();
+
   useEffect(() => {
 
     const setUser = async () => {
@@ -34,57 +33,53 @@ export default function Chatrooms() {
   useEffect(() => {
     // get all chatrooms and display them
     const getChatrooms = async () => {
-      const { data } = await axios.post(getAllChatrooms, { currUser });
-      // console.log(data);
+      const { data } = await axios.post(getAllChatroomsRoute, { currUser });
+      console.log('all ', data);
 
       if (data.status) {
         setAllChatrooms(data.chatrooms);
+        // console.log(data.chatrooms)
       }
     }
     getChatrooms();
 
   }, [currUser]);
 
-  const handleClickChatroom = (e) =>{
-    console.log(e.target);
-    e.stopPropagation();
+
+  // handle change chat
+  const chagneGroup = (group) => {
+    console.log('chage cahtroup called', group);
+    setSelectedGroup(group);
   }
+
+
+
   return (
-    <div className="max-w-2xl mx-auto p-4  text-purple-500">
+    <div className="flex h-screen w-3/4 mx-auto">
+      {/* Left section */}
+      <div className="flex flex-col w-1/3 pt-3 bg-purple-500 text-white">
+        <div className="flex items-center justify-between px-4 py-2">
+          <h1 className="text-2xl font-semibold">ChatRooms</h1>
 
-      <div className='flex justify-between mb-3'>
+          <Link to={'/createchatroom'}>
+            <img src={plus} alt="" className='w-8 h-8 font-bold' />
+          </Link>
 
-        <h1 className="text-3xl font-bold mb-4">All Chatrooms</h1>
-        <Link to="/createchatroom" className="bg-purple-500 text-white mt-4 flex justify-center items-center px-4 rounded-full">
-          Create Chatroom
-        </Link>
+        </div>
+
+       
+
+        {/* search user section  */}
+        <div className="px-4 py-2">
+          <input type="text" placeholder="Search" className="w-full bg-white border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-purple-400 focus:border-purple-400" />
+        </div>
+
+        {/* list of all users */}
+        <ChatroomGroups allChatrooms={allChatrooms} selectedGroup={selectedGroup} chagneGroup={chagneGroup} />
       </div>
 
-
-      {allChatrooms.length == 0 && <div className="py-4 px-6 text-2xl mt-16 flex items-center text-center justify-center font-bold">Oops! <br /> No Chatroom found.</div>
-}
-      <div className="shadow-lg rounded-lg overflow-hidden">
-
-        <ul className="divide-y divide-gray-200">
-          {allChatrooms?.map((chatroom, index) => (
-            <li key={chatroom._id} className="py-4 px-6 flex items-center">
-            <Link to={`/chatrooms/${chatroom.groupName}`} className='flex'>
-              {chatroom.isChatroomImageSet && 
-                <img src={chatroom?.chatroomImage} alt="Profile" className="w-10 h-10 rounded-full mr-4" />
-              }
-              <div className='capitalize'>
-                <p className="block text-gray-700 font-medium">{chatroom.groupName}
-                  <span className='ml-3'>({chatroom.creatorId === currUser._id ? "admin" : ""})</span>
-                </p>
-                <p className="block text-sm text-gray-500">{chatroom.groupDescription}</p>
-              </div></Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-
-      <ToastContainer />
+      {/* Right section */}
+      <ChatroomChats selectedGroup={selectedGroup} setSelectedGroup={setSelectedGroup} />
     </div>
-  )
+  );
 }

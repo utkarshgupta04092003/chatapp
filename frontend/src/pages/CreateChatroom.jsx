@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { APP_NAME } from '../utils/constant';
 import logo from '../assets/logo.png';
 import {useNavigate} from 'react-router-dom';
 import {createChatroomRoute} from '../utils/APIRoutes';
@@ -100,8 +99,8 @@ function CreateChatroom() {
     <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-16 p-6 bg-white rounded-lg shadow-xl">
       <div className="flex items-center justify-center mb-4 ">
         <div className="flex items-center">
-          <img src={logo} alt="Company Logo" className="w-12 h-12 mr-2" />
-          <h1 className="text-2xl font-bold">{APP_NAME}</h1>
+          <img src={logo} alt="Company Logo" className="w-12 h-12 mr-3 rounded-full" />
+          <h1 className="text-2xl font-bold">Create New Chatroom</h1>
         </div>
       </div>
 

@@ -69,7 +69,7 @@ export default function ParticularChat({ currChat, currUser, setCurrChat, socket
 
     }
     return (
-        <div className='border  border-gray-400 rounded-tr-xl rounded-br-xl w-3/4'>
+        <div className='border  border-gray-400 rounded-tr-xl rounded-br-xl w-2/3'>
             <div className="flex-1 bg-white p-4">
 
                 <div className="">

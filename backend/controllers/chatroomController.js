@@ -36,7 +36,7 @@ const getAllChatrooms = async (req, res, next) => {
 
 
     try {
-        console.log('get all chtrooms');
+        console.log('get all chtrooms', req.body.currUser);
         const userId = req.body.currUser._id;
         console.log('curr user id', userId);
         const chatrooms = await ChatroomsModel.find({
@@ -46,7 +46,7 @@ const getAllChatrooms = async (req, res, next) => {
             ]
         });
         console.log('Chatrooms:', chatrooms);
-        res.json({ msg: 'Get all users successfully', status: true, chatrooms });
+        return res.json({ msg: 'Get all chatrooms successfully', status: true, chatrooms });
 
     }
     catch (err) {

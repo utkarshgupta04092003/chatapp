@@ -26,11 +26,11 @@ const chatroomsSchema = new mongoose.Schema({
     }],
     isChatroomImageSet : {
         type: Boolean,
-        default: false
+        default: true
     },
     chatroomImage: {
         type: String,
-        default: "",
+        default: "https://api.multiavatar.com/370.svg",
     },
 
 },

@@ -13,5 +13,8 @@ export const getAllMessageRoute = `${host}/api/messages/getmsg`;
 
 export const createChatroomRoute = `${host}/api/chatroom/createchatroom`;
 export const getAllChatrooms = `${host}/api/chatroom/getallchatrooms`;
+export const getAllChatroomsRoute = `${host}/api/chatroom/getallchatrooms`;
 export const getChatroomChatRoute = `${host}/api/chatroom/chatroomchat`;
 export const addUserTochatroomRoute = `${host}/api/chatroom/adduser`;
+
+export const deleteChatroom = `${host}/api/chatroom/deletechatroom`
