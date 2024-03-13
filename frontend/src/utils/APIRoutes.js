@@ -19,3 +19,6 @@ export const addUserTochatroomRoute = `${host}/api/chatroom/adduser`;
 
 export const deleteChatroom = `${host}/api/chatroom/deletechatroom`;
 export const exitFromChatroom = `${host}/api/chatroom/exitfromchatroom`;
+
+
+export const addChatroomMessageRoute = `${host}/api/chatroommessage/addmessage`;

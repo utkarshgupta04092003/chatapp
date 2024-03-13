@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messagesRoute');
 const chatroomRoutes = require('./routes/chatroomRoute');
+const chatroomMessagesRoutes = require('./routes/chatroomMessageRoute');
 const socket = require('socket.io');
 
 const origin = 'http://localhost:5173';
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use('/api/auth', userRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/chatroom', chatroomRoutes);
+app.use('/api/chatroommessage', chatroomMessagesRoutes);
 
 
 mongoose.connect(`${process.env.DATABASE_URI}${process.env.DB_NAME}`, {

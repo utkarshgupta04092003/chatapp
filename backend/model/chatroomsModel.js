@@ -18,7 +18,7 @@ const chatroomsSchema = new mongoose.Schema({
     },  // user id
     message: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Message'
+        ref: 'GroupMessages'
     }],    // message id
     users: [{
         type: mongoose.Schema.Types.ObjectId,
