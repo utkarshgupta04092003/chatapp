@@ -65,7 +65,8 @@ const getChatroomChat = async (req, res, next) => {
         const groupName = req.params.groupName;
         const chatroom = await ChatroomsModel.find({ groupName }).populate('users');
 
-        if (!chatroom) {
+        console.log('cahtrom chat', chatroom);
+        if (!chatroom || chatroom.length ==0 ) {
             return res.status(200).json({ msg: 'Chatroom not found', status: false });
         }
 
@@ -117,4 +118,36 @@ const addUserTochatroom = async (req, res, next) => {
         return res.status(500).json({ message: 'Internal server error', status: false });
     }
 }
-module.exports = { createChatroom, getAllChatrooms, getChatroomChat, addUserTochatroom };
+
+const deleteChatroom = async (req, res, next) =>{
+    console.log('delete chatroom called', req.body);
+
+    try{
+    const chatroomId = req.body?.groupData._id;
+    // check the chatroom exist or not
+    const isExist = await ChatroomsModel.findById(chatroomId);
+    if(!isExist){
+        return res.json({msg: "Chatroom does not exist", status: false});
+    }
+
+    // todo: delete all the message of this chatroom
+     
+    // deleting chatroom
+    const deletedChatroom = await ChatroomsModel.findByIdAndDelete(chatroomId);
+
+    if (!deletedChatroom) {
+      return res.status(200).json({ msg: 'Chatroom not found', status: false });
+    }
+
+    console.log('deleted', deletedChatroom);
+
+    return res.status(200).json({ msg: 'Chatroom deleted successfully', status: true });
+
+
+
+  } catch (error) {
+    console.error('Error deleting chatroom:', error);
+    return res.status(200).json({ msg: 'Internal server error', status: false });
+  }
+}
+module.exports = { createChatroom, getAllChatrooms, getChatroomChat, addUserTochatroom, deleteChatroom };

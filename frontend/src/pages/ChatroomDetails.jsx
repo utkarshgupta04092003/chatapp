@@ -34,10 +34,10 @@ export default function ChatroomDetails() {
       const { data } = await axios.post(`${getChatroomChatRoute}/${groupName}`, {});
       console.log('chartoomchart data: ', data);
       console.log('chartoomchart data: ', (data.chatroom.users));
-      if (data.status)
+      if (data.status){
         setGroupData(data.chatroom);
-      setAllUsers(data.chatroom.users);
-
+        setAllUsers(data.chatroom.users);
+      }
     }
     fetchChatroomChat();
   }, []);
@@ -117,9 +117,17 @@ export default function ChatroomDetails() {
     const { data } = await axios.post(deleteChatroom, {
       groupData
     });
-
-
-
+    console.log('deleted', data);
+    if(data.status){
+      toast.success(data.msg, {autoClose: 2000});
+    }
+    else{
+      toast.error(data.msg, {autoClose: 2000});
+    }
+    setTimeout(() => {
+      
+      navigate('/chatrooms');
+    }, 3000);
   }
 
 
