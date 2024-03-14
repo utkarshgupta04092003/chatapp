@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import robot from '../assets/robot.gif';
 import axios from 'axios';
 import ChatroomHeader from './ChatroomHeader';
-import { addChatroomMessageRoute } from '../utils/APIRoutes';
+import { addChatroomMessageRoute, getChatroomMessageRoute } from '../utils/APIRoutes';
 
-import {ToastContainer, toast} from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import CurrentChatMessage from './CurrentChatMessage';
+import CurrentUserMessage from './CurrentUserMessage';
 
 
 export default function ChatroomChats({ selectedGroup, setSelectedGroup }) {
@@ -15,6 +17,7 @@ export default function ChatroomChats({ selectedGroup, setSelectedGroup }) {
     const [currUser, setCurrUser] = useState();
     const [groupDetails, setGroupDetails] = useState();
     const [inputMsg, setInputMsg] = useState('');
+    const [allMessages, setAllMessages] = useState([]);
 
     const navigate = useNavigate();
     useEffect(() => {
@@ -31,10 +34,21 @@ export default function ChatroomChats({ selectedGroup, setSelectedGroup }) {
                 setCurrUser(user);
             }
         }
-
         setUser();
     }, [])
 
+    useEffect(() => {
+        const fetchAllGroupMessages = async () => {
+            const { data } = await axios.post(getChatroomMessageRoute, {
+                groupId: groupDetails?._id
+            })
+            console.log('group msg', data);
+
+            setAllMessages(data?.messages);
+            setInputMsg('');
+        }
+        fetchAllGroupMessages();
+    }, [groupDetails]);
 
     useEffect(() => {
         const fetchGroupData = async () => {
@@ -49,17 +63,19 @@ export default function ChatroomChats({ selectedGroup, setSelectedGroup }) {
     const handleAddMessages = async (e) => {
         e.preventDefault();
         console.log('called hadnel add message');
-        if(!inputMsg){
-            toast.error("Type something to send", {autoclose: 2000});
+        if (!inputMsg) {
+            toast.error("Type something to send", { autoclose: 2000 });
             return;
         }
-        const {data} = await axios.post(addChatroomMessageRoute, {
+        const { data } = await axios.post(addChatroomMessageRoute, {
             userId: currUser._id,
             groupId: groupDetails._id,
             content: inputMsg,
             userName: currUser.username
         })
+        setAllMessages(data?.messages);
         console.log('data', data);
+
     }
 
 
@@ -70,37 +86,41 @@ export default function ChatroomChats({ selectedGroup, setSelectedGroup }) {
                 Click any chatroom to start conversation</h1>
         </div>) :
 
-        (
-            <div className="flex flex-col w-2/3 bg-gray-100">
+        (<>
+            <div className="flex flex-col w-2/3 bg-white border-r border-purple-50">
 
                 <ChatroomHeader setSelectedGroup={setSelectedGroup} groupDetails={groupDetails} />
-                <div className="flex-1 p-4">
+
+
+                {/* chat history */}
+                <div className="flex-1 space-y-6 overflow-y-auto rounded-xl bg-purple-50 p-4 text-sm leading-6  shadow-sm text-gray-600  sm:text-base sm:leading-7 h-[100vh">
+                    {
+                        allMessages.length == 0 && <h1 className='font-bold text-2xl flex justify-center items-center h-full text-purple-500'>Let's start the conversations</h1>
+                    }
+                    {allMessages.length !== 0 && allMessages?.map((message, index) => (
+                        <div >
+                            {message?.senderId == currUser._id ? <CurrentUserMessage currUser={""} message={message.content} msg={message} /> :
+                                <CurrentChatMessage currChat={""} message={message.content} msg={message}/>}
+                        </div>
+
+                    ))}
+                </div>
+                <div className="flex w-full p-4 bg-white">
 
 
                     {/* Chat section */}
-                    <form className="flex items-center justify-between mb-4" onSubmit={handleAddMessages}>
-                        <input type="text" 
-                        placeholder="Type your message" 
-                        value={inputMsg}
-                        onChange={(e)=>setInputMsg(e.target.value)}
-                        className="w-full bg-white border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-purple-400 focus:border-purple-400" />
-                        <button className="text-sm text-white bg-purple-600 px-4 py-2 rounded-md" onClick={handleAddMessages}>Send</button>
+                    <form className="flex items-center justify-between w-full" onSubmit={handleAddMessages}>
+                        <input type="text"
+                            placeholder="Type your message"
+                            value={inputMsg}
+                            onChange={(e) => setInputMsg(e.target.value)}
+                            className="w-full bg-white border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-purple-400 focus:border-purple-400" />
+                        <button className="text-sm text-white bg-purple-600 px-4 py-2 rounded-md ml-3" onClick={handleAddMessages}>Send</button>
                     </form>
 
-
-                    {/* <div className="flex flex-col space-y-4">
-                        Chat messages
-                        Replace with actual chat messages
-                        <div className="flex items-center">
-                            <img src="/user-profile.jpg" alt="User profile" className="w-8 h-8 rounded-full" />
-                            <div className="bg-purple-600 text-white px-4 py-2 rounded-md">
-                                <p>Chat message</p>
-                            </div>
-                        </div>
-                        {/* Repeat for each chat message 
-                    </div> */}
                 </div>
-                <ToastContainer/>
             </div>
-        )
+            <ToastContainer />
+
+        </>)
 }

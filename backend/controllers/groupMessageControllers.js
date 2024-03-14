@@ -29,7 +29,7 @@ const addMessage = async (req, res, next) =>{
         await chatroom.save();
         const modified = await chatroom.populate('message');
 
-        return res.json({msg: 'Message Send successfully', stauts: true, chatroom: modified});
+        return res.json({msg: 'Message Send successfully', stauts: true, messages: modified.message});
         
 
 
@@ -40,4 +40,24 @@ const addMessage = async (req, res, next) =>{
     }
 }
 
-module.exports = {addMessage};
+const getMessage = async (req, res, next) =>{
+    try {
+        // Fetch all messages with groupId "#123" and sort them by createdAt in descending order
+        const {groupId} = req.body;
+        const messages = await GroupMessagesModel.find({ groupId: groupId })
+          .sort({ createdAt: -1 })
+          .exec();
+
+        //   const modified = await messages.populate('message');
+    
+        // Return the sorted messages
+        return res.json({msg: 'Fetched all message of this group', stauts: true, messages});
+
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+        
+        return res.json({msg: 'Internval sever error', status: false});
+      }
+}
+
+module.exports = {addMessage, getMessage};

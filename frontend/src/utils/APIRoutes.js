@@ -22,3 +22,4 @@ export const exitFromChatroom = `${host}/api/chatroom/exitfromchatroom`;
 
 
 export const addChatroomMessageRoute = `${host}/api/chatroommessage/addmessage`;
+export const getChatroomMessageRoute = `${host}/api/chatroommessage/getmessage`;
