@@ -11,10 +11,6 @@ const groupMessagesSchema = new mongoose.Schema({
         ref: 'Users',
         required: true
     },
-    senderName : {
-        type: String,
-        required: true
-    },
     content: {
         type: String,
         required: true

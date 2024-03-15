@@ -71,7 +71,6 @@ export default function ChatroomChats({ selectedGroup, setSelectedGroup }) {
             userId: currUser._id,
             groupId: groupDetails._id,
             content: inputMsg,
-            userName: currUser.username
         })
         setAllMessages(data?.messages);
         console.log('data', data);
@@ -95,12 +94,21 @@ export default function ChatroomChats({ selectedGroup, setSelectedGroup }) {
                 {/* chat history */}
                 <div className="flex-1 space-y-6 overflow-y-auto rounded-xl bg-purple-50 p-4 text-sm leading-6  shadow-sm text-gray-600  sm:text-base sm:leading-7 h-[100vh">
                     {
-                        allMessages.length == 0 && <h1 className='font-bold text-2xl flex justify-center items-center h-full text-purple-500'>Let's start the conversations</h1>
+                        allMessages?.length == 0 && <h1 className='font-bold text-2xl flex justify-center items-center h-full text-purple-500'>Let's start the conversations</h1>
                     }
-                    {allMessages.length !== 0 && allMessages?.map((message, index) => (
+                    {allMessages?.length !== 0 && allMessages?.map((message, index) => (
                         <div >
-                            {message?.senderId == currUser._id ? <CurrentUserMessage currUser={""} message={message.content} msg={message} /> :
-                                <CurrentChatMessage currChat={""} message={message.content} msg={message}/>}
+                            {
+                            message?.senderId?._id == currUser._id ? 
+                            
+                            <CurrentUserMessage 
+                            currUser={{avatarImage: message?.senderId?.avatarImage, username: message?.senderId?.username, }}
+                            message={message.content}/> :
+
+                            <CurrentChatMessage 
+                            currChat={{avatarImage: message?.senderId?.avatarImage, username: message?.senderId?.username, }}
+                            message={message.content}/>
+                            }
                         </div>
 
                     ))}

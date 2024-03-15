@@ -5,20 +5,19 @@ const addMessage = async (req, res, next) =>{
 
     console.log('add msg called', req.body);
     try{
-        const {groupId, userId, content, userName} = req.body;
+        const {groupId, userId, content, userName, userAvatar} = req.body;
 
         const chatroom =  await ChatroomModel.findById(groupId);
         if(!chatroom){
             return res.json({msg: 'chatroom not found', status: false})
         }
 
-        console.log('chatroom',chatroom)
+        // console.log('chatroom',chatroom)
         
         const chatroommsg = await GroupMessagesModel.create({
             groupId: groupId,
             senderId: userId,
             content: content,
-            senderName: userName
         })
 
         if(!chatroommsg){
@@ -27,9 +26,12 @@ const addMessage = async (req, res, next) =>{
 
         chatroom.message.push(chatroommsg);
         await chatroom.save();
-        const modified = await chatroom.populate('message');
+        const messages = await GroupMessagesModel.find({ groupId: groupId }).populate({
+            path: 'senderId',
+            select: 'username avatarImage'
+        });
 
-        return res.json({msg: 'Message Send successfully', stauts: true, messages: modified.message});
+        return res.json({msg: 'Message Send successfully', stauts: true, messages: messages});
         
 
 
@@ -42,15 +44,12 @@ const addMessage = async (req, res, next) =>{
 
 const getMessage = async (req, res, next) =>{
     try {
-        // Fetch all messages with groupId "#123" and sort them by createdAt in descending order
         const {groupId} = req.body;
-        const messages = await GroupMessagesModel.find({ groupId: groupId })
-          .sort({ createdAt: -1 })
-          .exec();
+        const messages = await GroupMessagesModel.find({ groupId: groupId }).populate({
+            path: 'senderId',
+            select: 'username avatarImage'
+        });
 
-        //   const modified = await messages.populate('message');
-    
-        // Return the sorted messages
         return res.json({msg: 'Fetched all message of this group', stauts: true, messages});
 
       } catch (error) {

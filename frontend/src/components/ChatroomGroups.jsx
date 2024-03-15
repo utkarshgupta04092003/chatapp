@@ -14,7 +14,7 @@ export default function ChatroomGroups({ allChatrooms, chagneGroup, selectedGrou
                         <li className={`flex items-center justify-between p-2 px-3 rounded-lg cursor-pointer border border-white my-3 ${chatroom?._id === selectedGroup?._id ? "bg-white text-gray-600" : ""}`} key={chatroom._id} onClick={() => handleChangeGroup(chatroom)}>
                             <div className="flex items-center space-x-2">
                                 <img src={chatroom?.chatroomImage} alt="User profile" className="w-8 h-8 rounded-full" />
-                                <span className="font-semibold">{chatroom.groupName}</span>
+                                <span className="font-semibold capitalize">{chatroom.groupName}</span>
                             </div>
                         </li>
 
