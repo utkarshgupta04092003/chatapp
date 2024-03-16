@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import robot from '../assets/robot.gif';
 import axios from 'axios';
 import ChatroomHeader from './ChatroomHeader';
 import { addChatroomMessageRoute, getChatroomMessageRoute } from '../utils/APIRoutes';
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import CurrentChatMessage from './CurrentChatMessage';
 import CurrentUserMessage from './CurrentUserMessage';
+import MsgInput from './MsgInput';
 
 
 export default function ChatroomChats({ selectedGroup, setSelectedGroup }) {
@@ -20,6 +19,8 @@ export default function ChatroomChats({ selectedGroup, setSelectedGroup }) {
     const [allMessages, setAllMessages] = useState([]);
 
     const navigate = useNavigate();
+    const scrollRef = useRef();
+
     useEffect(() => {
 
         const setUser = async () => {
@@ -48,29 +49,29 @@ export default function ChatroomChats({ selectedGroup, setSelectedGroup }) {
             setInputMsg('');
         }
         fetchAllGroupMessages();
+
     }, [groupDetails]);
 
     useEffect(() => {
         const fetchGroupData = async () => {
-            // const { data } = await axios.post('adsf', { groupId: selectedGroup._id});
             setGroupDetails(selectedGroup);
-
         }
         fetchGroupData();
+        setTimeout(() => {
+
+            scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 500);
 
     }, [selectedGroup]);
 
-    const handleAddMessages = async (e) => {
-        e.preventDefault();
+    const handleAddMessages = async (msg) => {
+        // e.preventDefault();
         console.log('called hadnel add message');
-        if (!inputMsg) {
-            toast.error("Type something to send", { autoclose: 2000 });
-            return;
-        }
+
         const { data } = await axios.post(addChatroomMessageRoute, {
             userId: currUser._id,
             groupId: groupDetails._id,
-            content: inputMsg,
+            content: msg,
         })
         setAllMessages(data?.messages);
         console.log('data', data);
@@ -97,38 +98,27 @@ export default function ChatroomChats({ selectedGroup, setSelectedGroup }) {
                         allMessages?.length == 0 && <h1 className='font-bold text-2xl flex justify-center items-center h-full text-purple-500'>Let's start the conversations</h1>
                     }
                     {allMessages?.length !== 0 && allMessages?.map((message, index) => (
-                        <div >
+                        <div ref={scrollRef} >
                             {
-                            message?.senderId?._id == currUser._id ? 
-                            
-                            <CurrentUserMessage 
-                            currUser={{avatarImage: message?.senderId?.avatarImage, username: message?.senderId?.username, }}
-                            message={message.content}/> :
+                                message?.senderId?._id == currUser._id ?
 
-                            <CurrentChatMessage 
-                            currChat={{avatarImage: message?.senderId?.avatarImage, username: message?.senderId?.username, }}
-                            message={message.content}/>
+                                    <CurrentUserMessage
+                                        currUser={{ avatarImage: message?.senderId?.avatarImage, username: message?.senderId?.username, }}
+                                        message={message.content} /> :
+
+                                    <CurrentChatMessage
+                                        currChat={{ avatarImage: message?.senderId?.avatarImage, username: message?.senderId?.username, }}
+                                        message={message.content} />
                             }
                         </div>
 
                     ))}
                 </div>
                 <div className="flex w-full p-4 bg-white">
-
-
-                    {/* Chat section */}
-                    <form className="flex items-center justify-between w-full" onSubmit={handleAddMessages}>
-                        <input type="text"
-                            placeholder="Type your message"
-                            value={inputMsg}
-                            onChange={(e) => setInputMsg(e.target.value)}
-                            className="w-full bg-white border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-purple-400 focus:border-purple-400" />
-                        <button className="text-sm text-white bg-purple-600 px-4 py-2 rounded-md ml-3" onClick={handleAddMessages}>Send</button>
-                    </form>
-
+                    <MsgInput handleSendMessage={handleAddMessages} />
                 </div>
+
             </div>
-            <ToastContainer />
 
         </>)
 }
