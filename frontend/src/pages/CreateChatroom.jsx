@@ -11,8 +11,8 @@ function CreateChatroom() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    password: '',
-    confirmPassword: ''
+    password: '1111111111',
+    confirmPassword: '1111111111'
   });
 
   const [currUser, setCurrUser] = useState({});
@@ -113,7 +113,7 @@ function CreateChatroom() {
           value={formData.name}
           onChange={handleChange}
           // required
-          className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm" placeholder="Username"
+          className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm" placeholder="Chatroom Name"
         />
       </div>
 
@@ -124,35 +124,11 @@ function CreateChatroom() {
           name="description"
           value={formData.description}
           onChange={handleChange}
-          className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm" placeholder="Description"
+          className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm" placeholder="Chatroom Description"
         />
       </div>
 
-      <div className="mb-4">
-        {/* <label htmlFor="password" className="block text-gray-700">Password:</label> */}
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          // required
-          className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm" placeholder="Password"
-        />
-      </div>
-
-      <div className="mb-4">
-        {/* <label htmlFor="password" className="block text-gray-700">Password:</label> */}
-        <input
-          type="password"
-          id="conformPassword"
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          // required
-          className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm" placeholder="Confirm Password"
-        />
-      </div>
+      {/*  */}
       <button type="submit" className="bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-600 focus:outline-none focus:ring focus:ring-purple-500">Create Chatroom</button>
 
       <ToastContainer></ToastContainer>

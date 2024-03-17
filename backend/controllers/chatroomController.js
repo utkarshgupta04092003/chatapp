@@ -38,7 +38,7 @@ const getAllChatrooms = async (req, res, next) => {
 
     try {
         // console.log('get all chtrooms', req.body.currUser);
-        const userId = req.body.currUser._id;
+        const userId = req.body?.currUser._id;
         // console.log('curr user id', userId);
         const chatrooms = await ChatroomsModel.find({
             $or: [
