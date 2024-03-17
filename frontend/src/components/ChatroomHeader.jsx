@@ -41,15 +41,15 @@ export default function ChatroomHeader({ setSelectedGroup, groupDetails }) {
 
 
     return (
-        <div className="p-4 py-2 bg-purple-500 border border-purple-600 text-white">
+        <div className="p-4 py-2 bg-white border-purple-600 text-black">
             {/* Group details */}
             <div className="flex items-center justify-between space-x-4">
                 <div className='flex items-center space-x-4'>
 
                     <img src={groupDetails?.chatroomImage} alt="Group image" className="w-12 h-12 rounded-full" />
                     <div>
-                        <h2 className="text-xl font-semibold  text-white capitalize">{groupDetails?.groupName} {currUser?._id == groupDetails?.creatorId ? "(Admin)" : ""}</h2>
-                        <p className=" text-white capitalize">{groupDetails?.groupDescription}</p>
+                        <h2 className="text-xl font-semibold   capitalize">{groupDetails?.groupName} {currUser?._id == groupDetails?.creatorId ? "(Admin)" : ""}</h2>
+                        <p className="capitalize">{groupDetails?.groupDescription}</p>
                     </div>
                 </div>
                 {/* <div className='font-bold flex justify-center items-center text-2xl select-none'>...</div> */}
