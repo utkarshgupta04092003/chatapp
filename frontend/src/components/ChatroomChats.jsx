@@ -3,14 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import robot from '../assets/robot.gif';
 import axios from 'axios';
 import ChatroomHeader from './ChatroomHeader';
-import { addChatroomMessageRoute, getChatroomMessageRoute } from '../utils/APIRoutes';
+import { addChatroomMessageRoute, getChatroomMessageRoute, host } from '../utils/APIRoutes';
 
 import CurrentChatMessage from './CurrentChatMessage';
 import CurrentUserMessage from './CurrentUserMessage';
 import MsgInput from './MsgInput';
 
 
-export default function ChatroomChats({ selectedGroup, setSelectedGroup }) {
+
+export default function ChatroomChats({ selectedGroup, setSelectedGroup, socket }) {
 
 
     const [currUser, setCurrUser] = useState();
@@ -36,14 +37,16 @@ export default function ChatroomChats({ selectedGroup, setSelectedGroup }) {
             }
         }
         setUser();
-    }, [])
+
+
+    }, []);
 
     useEffect(() => {
         const fetchAllGroupMessages = async () => {
             const { data } = await axios.post(getChatroomMessageRoute, {
                 groupId: groupDetails?._id
             })
-            console.log('group msg', data);
+            // console.log('group msg', data);
 
             setAllMessages(data?.messages);
             setInputMsg('');
@@ -57,12 +60,42 @@ export default function ChatroomChats({ selectedGroup, setSelectedGroup }) {
             setGroupDetails(selectedGroup);
         }
         fetchGroupData();
-        setTimeout(() => {
+        const scroll = setTimeout(() => {
 
-            scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+            scrollRef.current?.scrollIntoView();
         }, 500);
 
+        // return () => {
+        //     // Clean up event listener
+        //     clearTimeout(scroll);
+        // };
     }, [selectedGroup]);
+
+
+    const [arrivalMsg, setArrivalMsg] = useState();
+
+
+    useEffect(() => {
+        const handleMessage = (message) => {
+            console.log('Received message:', message);
+            if(message?.senderId._id !== currUser._id)
+            setAllMessages(prev => [...prev, message]);
+            scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+
+        };
+        
+        if (socket?.current) {
+            // Add event listener
+            socket.current.on('message', handleMessage);
+        }
+    
+        return () => {
+            // Clean up event listener
+            if (socket?.current) {
+                socket.current.off('message', handleMessage);
+            }
+        };
+    }, []);
 
     const handleAddMessages = async (msg) => {
         // e.preventDefault();
@@ -73,8 +106,22 @@ export default function ChatroomChats({ selectedGroup, setSelectedGroup }) {
             groupId: groupDetails._id,
             content: msg,
         })
+
+        console.log('chatroom msg currnet', socket.current);
+        socket.current.emit('chatroom-sendMessage', groupDetails._id, {
+            groupId: groupDetails._id,
+            content: msg,
+            senderId: {
+                avatarImage: currUser.avatarImage,
+                username: currUser.username,
+                _id: currUser._id
+            }
+        })
+
+
+        // console.log('socket', socket);
         setAllMessages(data?.messages);
-        console.log('data', data);
+        // console.log('data', data);
 
     }
 
@@ -93,14 +140,14 @@ export default function ChatroomChats({ selectedGroup, setSelectedGroup }) {
 
 
                 {/* chat history */}
-                <div className="flex-1 space-y-6 overflow-y-auto rounded-xl bg-purple-50 p-4 text-sm leading-6  shadow-sm text-gray-600  sm:text-base sm:leading-7 h-[100vh">
+                <div className="flex-1 space-y-6 overflow-y-auto rounded-xl bg-purple-50 p-4 text-sm leading-6  shadow-sm text-gray-600  sm:text-base sm:leading-7 h-[100vh" ref={scrollRef}>
                     {
                         allMessages?.length == 0 && <h1 className='font-bold text-2xl flex justify-center items-center h-full text-purple-500'>Let's start the conversations</h1>
                     }
                     {allMessages?.length !== 0 && allMessages?.map((message, index) => (
                         <div ref={scrollRef} >
                             {
-                                message?.senderId?._id == currUser._id ?
+                                message?.senderId?._id == currUser?._id ?
 
                                     <CurrentUserMessage
                                         currUser={{ avatarImage: message?.senderId?.avatarImage, username: message?.senderId?.username, }}

@@ -42,25 +42,46 @@ const io = socket(server, {
 
 
 global.onlineUsers = new Map();
+global.ChatroomUsers = new Map();
 
 io.on('connection', (socket) => {
     global.chatSocket = socket;
 
     socket.on('add-user', (userId) => {
-        console.log(userId, socket.id);
+        console.log('add chatrom user', userId, socket.id);
         // Correctly set userId and socket.id into the onlineUsers map
         global.onlineUsers.set(userId, socket.id);
     });
 
     socket.on('send-msg', (data) => {
         console.log(global.onlineUsers);
-        console.log('data', data);
+        console.log('socket data', data);
         const sendUserSocket = global.onlineUsers.get(data.to);
         console.log('sendUserSocket', sendUserSocket);
         if (sendUserSocket) {
             console.log('data.msg', data.message);
             socket.to(sendUserSocket).emit('msg-recieve', data.message);
         }
+    });
+// for chatroom socket
+
+    // Join a room when a user connects
+    socket.on('joinRoom', (roomId) => {
+        socket.join(roomId);
+        console.log(`User joined room ${roomId}`);
+    });
+
+
+    // Handle message events
+    socket.on('chatroom-sendMessage', (roomId, message) => {
+        // Broadcast the message to all users in the room
+        console.log('roomid and then msg', roomId, message);
+        io.to(roomId).emit('message', message);
+    });
+
+    // Handle disconnections
+    socket.on('disconnect', () => {
+        console.log('A user disconnected');
     });
 });
 
