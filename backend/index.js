@@ -15,7 +15,7 @@ require("dotenv").config();
 
 app.use(cors());
 app.use(express.json());
-
+app.get('/',(req,res)=>{ return res.send('working api')});
 app.use('/api/auth', userRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/chatroom', chatroomRoutes);
